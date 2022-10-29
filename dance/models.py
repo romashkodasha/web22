@@ -4,7 +4,7 @@ class Groups(models.Model):
     age = models.CharField(max_length=10, blank=True, null=True)
     id_trainer = models.ForeignKey('Trainers', models.DO_NOTHING, db_column='id_trainer')
     pic = models.CharField(max_length=500, blank=True, null=True)
-    timetable=models.CharField(max_length=50, blank=True, null=True)
+    timetable=models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
         managed = True
@@ -37,7 +37,6 @@ class Subscriptions(models.Model):
 #     id_group = models.ForeignKey(Groups, models.DO_NOTHING, db_column='id_group')
 #     day = models.CharField(max_length=15, blank=True, null=True)
 #     time = models.TimeField(blank=True, null=True)
-#
 #     class Meta:
 #         managed = True
 #         db_table = 'timetable'
