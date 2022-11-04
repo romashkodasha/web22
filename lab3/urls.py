@@ -20,10 +20,9 @@ from django.urls import include, path
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register(r'groups', dance_views.GroupsViewSet)
+router.register(r'classes', dance_views.ClassesViewSet)
 router.register(r'students', dance_views.StudentsViewSet)
-router.register(r'subscriptions', dance_views.SubscriptionsViewSet)
-router.register(r'trainers', dance_views.TrainersViewSet)
+router.register(r'purchase', dance_views.PurchaseViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

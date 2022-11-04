@@ -1,29 +1,20 @@
-from dance.models import Groups
+from dance.models import Class
 from dance.models import Students
-from dance.models import Subscriptions
-from dance.models import Trainers
+from dance.models import Purchase
 from rest_framework import serializers
-
-
-class GroupsSerializer(serializers.ModelSerializer):
+class ClassSerializer(serializers.ModelSerializer):
     class Meta:
         # Модель, которую мы сериализуем
-        model = Groups
+        model = Class
         # Поля, которые мы сериализуем
-        fields = ["id", "style", "age", "id_trainer","pic"]
+        fields = ["id", "trainer", "date", "place","deskr","img"]
 
 class StudentsSerializer (serializers.ModelSerializer):
     class Meta:
         model = Students
-        fields = ["id", "name", "phone", "birth_date"]
+        fields = ["id", "name", "phone", "mail", "passw"]
 
-class SubscriptionsSerializer (serializers.ModelSerializer):
+class PurchaseSerializer (serializers.ModelSerializer):
     class Meta:
-        model = Subscriptions
-        fields = ["id", "id_group", "id_student", "num_classes", "date_of_purchase","status"]
-
-#справочные таблицы
-class TrainersSerializer (serializers.ModelSerializer):
-    class Meta:
-        model = Trainers
-        fields = ["id", "name", "info", "phone","photo", "birth_date" ]
+        model = Purchase
+        fields = ["id", "id_class", "id_student", "date_of_order", "date_of_purchase","status"]

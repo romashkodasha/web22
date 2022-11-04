@@ -1,32 +1,27 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from dance.serializers import GroupsSerializer
+from dance.serializers import ClassSerializer
 from dance.serializers import StudentsSerializer
-from dance.serializers import SubscriptionsSerializer
-from dance.serializers import TrainersSerializer
-from dance.models import Groups
+from dance.serializers import PurchaseSerializer
+from dance.models import Class
 from dance.models import Students
-from dance.models import Subscriptions
-from dance.models import Trainers
+from dance.models import Purchase
 
 
 
-class GroupsViewSet(viewsets.ModelViewSet):
+class ClassesViewSet(viewsets.ModelViewSet):
     """
     API endpoint, который позволяет просматривать и редактировать группы
     """
-    queryset = Groups.objects.all()
-    serializer_class = GroupsSerializer  # Сериализатор для модели
+    queryset = Class.objects.all()
+    serializer_class = ClassSerializer  # Сериализатор для модели
 
 class StudentsViewSet(viewsets.ModelViewSet):
     queryset = Students.objects.all()
     serializer_class = StudentsSerializer
 
-class SubscriptionsViewSet(viewsets.ModelViewSet):
-    queryset = Subscriptions.objects.all()
-    serializer_class = SubscriptionsSerializer
+class PurchaseViewSet(viewsets.ModelViewSet):
+    queryset = Purchase.objects.all()
+    serializer_class = PurchaseSerializer
 
-class TrainersViewSet (viewsets.ModelViewSet):
-    queryset = Trainers.objects.all()
-    serializer_class = TrainersSerializer
 
