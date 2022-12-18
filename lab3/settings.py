@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = 'django-insecure-3+jrv4l+_w6gw!-n8_tez1@v_rcp)6%@flkp%i7arxa85gtx52
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -44,15 +42,18 @@ INSTALLED_APPS = [
     # Наше приложение
     'dance',
 
-    #cors политика
+    # cors политика
     "corsheaders",
+
+    # swagger
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'corsheaders.middleware.CorsMiddleware', #cors политика
+    'corsheaders.middleware.CorsMiddleware',  # cors политика
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -80,7 +81,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'lab3.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -91,12 +91,11 @@ DATABASES = {
         'USER': 'dbuser',
         'PASSWORD': '123',
         'HOST': 'localhost',
-        'PORT': 3306, # Стандартный порт MySQL
+        'PORT': 3306,  # Стандартный порт MySQL
         'OPTIONS': {'charset': 'utf8'},
         'TEST_CHARSET': 'utf8',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -116,7 +115,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -127,7 +125,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -160,11 +157,11 @@ CORS_ALLOW_METHODS = [
 ]
 
 CORS_ALLOW_HEADERS = ["accept",
-    "accept-encoding",
-    "authorization",
-    "content-type",
-    "dnt",
-    "origin",
-    "user-agent",
-    "x-csrftoken",
-    "x-requested-with",]
+                      "accept-encoding",
+                      "authorization",
+                      "content-type",
+                      "dnt",
+                      "origin",
+                      "user-agent",
+                      "x-csrftoken",
+                      "x-requested-with", ]
