@@ -20,9 +20,9 @@ from django.urls import include, path
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register(r'classes', dance_views.ClassesViewSet)
-router.register(r'students', dance_views.StudentsViewSet)
-router.register(r'purchase', dance_views.PurchaseViewSet)
+router.register(r'classes', dance_views.ClassesViewSet, basename='classes')
+router.register(r'students', dance_views.StudentsViewSet, basename='students')
+router.register(r'purchase', dance_views.PurchaseViewSet, basename='purchase')
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
@@ -30,4 +30,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
+    path(r'classes_price/', dance_views.priceRange)
 ]

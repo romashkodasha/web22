@@ -7,14 +7,16 @@ class ClassSerializer(serializers.ModelSerializer):
         # Модель, которую мы сериализуем
         model = Class
         # Поля, которые мы сериализуем
-        fields = ["id", "trainer", "date", "place","deskr","img"]
+        fields = ["id", "trainer", "date", "price", "place","descr","img"]
 
 class StudentsSerializer (serializers.ModelSerializer):
     class Meta:
         model = Students
-        fields = ["id", "name", "phone", "mail", "passw"]
+        fields = ["id", "name", "phone", "passw"]
 
 class PurchaseSerializer (serializers.ModelSerializer):
     class Meta:
         model = Purchase
         fields = ["id", "id_class", "id_student", "date_of_order", "date_of_purchase","status"]
+
+

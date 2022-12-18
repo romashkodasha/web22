@@ -2,6 +2,7 @@ from django.db import models
 class Class(models.Model):
     trainer = models.CharField(max_length=30)
     date = models.DateTimeField()
+    price = models.IntegerField(blank=True, null=True)
     place = models.CharField(max_length=50, blank=True, null=True)
     descr = models.CharField(max_length=255, blank=True, null=True)
     img = models.CharField(max_length=500, blank=True, null=True)
@@ -14,7 +15,6 @@ class Class(models.Model):
 class Students(models.Model):
     name = models.CharField(max_length=50)
     phone = models.CharField(max_length=12, blank=True, null=True)
-    mail = models.CharField(max_length=30, blank=True, null=True)
     passw = models.CharField(max_length=30, blank=True, null=True)
     class Meta:
         managed = True
