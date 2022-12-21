@@ -49,6 +49,12 @@ INSTALLED_APPS = [
     'drf_yasg',
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -138,7 +144,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-CORS_ALLOW_ALL_ORIGINS: True
+# CORS_ALLOW_ALL_ORIGINS: True
+
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -156,6 +164,8 @@ CORS_ALLOW_METHODS = [
     "PUT",
 ]
 
+
+
 CORS_ALLOW_HEADERS = ["accept",
                       "accept-encoding",
                       "authorization",
@@ -165,3 +175,8 @@ CORS_ALLOW_HEADERS = ["accept",
                       "user-agent",
                       "x-csrftoken",
                       "x-requested-with", ]
+APPEND_SLASH = True
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+AUTH_USER_MODEL = 'dance.User'
