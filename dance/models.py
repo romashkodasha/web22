@@ -15,6 +15,7 @@ class Class(models.Model):
     place = models.CharField(max_length=50, blank=True, null=True)
     descr = models.CharField(max_length=255, blank=True, null=True)
     img = models.CharField(max_length=500, blank=True, null=True)
+    status = models.BooleanField(default=True)
 
     class Meta:
         managed = True

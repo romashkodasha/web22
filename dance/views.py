@@ -7,7 +7,8 @@ from rest_framework.response import Response
 from django.db.models import Max, Min
 from rest_framework.views import APIView
 
-from dance.serializers import ClassSerializer, PurchaseSerializer, LoginSerializer, RegistrationSerializer
+from dance.serializers import ClassSerializer, PurchaseSerializer, LoginSerializer, RegistrationSerializer, \
+    UserSerializer
 from dance.models import Class, User, Purchase
 from django.conf import settings
 import redis
@@ -82,7 +83,7 @@ class ClassesViewSet(viewsets.ModelViewSet):
             return Response([], status=status.HTTP_404_NOT_FOUND)
 
     def get_queryset(self):
-        queryset = Class.objects.all()
+        queryset = Class.objects.filter(status=True)
         min_price = self.request.query_params.get('minPrice')
         max_price = self.request.query_params.get('maxPrice')
         if min_price:
@@ -197,3 +198,25 @@ class LogoutAPIView(APIView):
             return response
 
         return Response({"status": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+
+class UsersViewSet(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+
+    def get_permissions(self):
+        if self.action in []:
+            permission_classes = [IsAuthenticatedOrReadOnly]
+        elif self.action in ['retrieve', 'list']:
+            permission_classes = [IsStaff]
+        else:
+            permission_classes = [IsSuperUser]
+        return [permission() for permission in permission_classes]
+
+    def list(self, request, *args, **kwargs):
+        serializer = UserSerializer(User.objects.all(), many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None, **kwargs):
+        queryset = User.objects.all()
+        contract = get_object_or_404(queryset, pk=pk)
+        serializer = UserSerializer(contract)
+        return Response(serializer.data, status=status.HTTP_200_OK)

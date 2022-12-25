@@ -8,7 +8,7 @@ class ClassSerializer(serializers.ModelSerializer):
         # Модель, которую мы сериализуем
         model = Class
         # Поля, которые мы сериализуем
-        fields = ["id", "trainer", "date", "price", "place","descr","img"]
+        fields = ["id", "trainer", "date", "price", "place","descr","img","status"]
 
 # class StudentsSerializer (serializers.ModelSerializer):
 #     class Meta:
@@ -71,3 +71,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+
+        fields = ['id', 'email', 'username', 'birth_date']
