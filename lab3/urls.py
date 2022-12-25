@@ -51,5 +51,5 @@ urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('registration/', dance_views.RegistrationAPIView.as_view()),
     path('login/', dance_views.LoginAPIView.as_view()),
-    path('logout/', dance_views.auth_logout)
+    path('logout/', dance_views.LogoutAPIView.as_view())
 ]

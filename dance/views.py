@@ -14,8 +14,10 @@ import redis
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 import uuid
+import logging
 from dance.permissions import IsStaff, IsSuperUser
 from rest_framework.generics import get_object_or_404
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 session_storage = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 
@@ -29,9 +31,9 @@ class ClassesViewSet(viewsets.ModelViewSet):
     search_fields = ['trainer']
 
     def get_permissions(self):
-        if self.action in ['list', 'price_range']:
+        if self.action in ['list', 'price_range', 'retrieve']:
             permission_classes = [IsAuthenticatedOrReadOnly]
-        elif self.action in ['retrieve', 'update', 'partial_update']:  # здесь был elif
+        elif self.action in ['post', 'create', 'update', 'partial_update']:
             permission_classes = [IsStaff]
         else:
             permission_classes = [IsSuperUser]
@@ -46,6 +48,12 @@ class ClassesViewSet(viewsets.ModelViewSet):
         service = get_object_or_404(queryset, pk=pk)
         serializer = ClassSerializer(service)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        request_service = request.data
+        service_serialized = ClassSerializer(request_service)
+        request_service.save()
+        return Response(service_serialized.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, pk=None, **kwargs):
         try:
@@ -84,23 +92,13 @@ class ClassesViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-# @api_view(['GET'])  # нужно ли изменить на action?
-# def priceRange(request):
-#     return Response(Class.objects.aggregate(price_min=Min('price'), price_max=Max('price')))
-
-
-# class StudentsViewSet(viewsets.ModelViewSet):
-#     queryset = Students.objects.all()
-#     serializer_class = StudentsSerializer
-
-
 class PurchaseViewSet(viewsets.ModelViewSet):
     serializer_class = PurchaseSerializer
 
     def get_permissions(self):
-        if self.action in ['list']:
+        if self.action in ['list', 'partial_update', 'destroy', 'create', 'purchase_statuses']:
             permission_classes = [IsAuthenticatedOrReadOnly]
-        elif self.action in ['retrieve', 'update', 'partial_update']:
+        elif self.action in ['retrieve', 'update', 'create']:
             permission_classes = [IsStaff]
         else:
             permission_classes = [IsSuperUser]
@@ -110,13 +108,21 @@ class PurchaseViewSet(viewsets.ModelViewSet):
         queryset = Purchase.objects.all().order_by('id')
         user_id = self.request.query_params.get('user_id')
         status = self.request.query_params.get('status')
-
         if status:
             queryset = queryset.filter(status=status)
         if user_id:
             queryset = queryset.filter(id_student=user_id)
         return queryset
 
+    @action(detail=False, methods=['get'])
+    def purchase_statuses(self, request):
+        statuses = []
+        for choice in Purchase.PurchaseStatus.choices:
+            statuses.append({'value': choice[0], 'label': choice[1]})
+        try:
+            return Response(statuses)
+        except:
+            return Response([], status=status.HTTP_404_NOT_FOUND)
     def list(self, request, *args, **kwargs):
         serializer = PurchaseSerializer(self.get_queryset(), many=True)
         return Response(serializer.data)
@@ -126,6 +132,12 @@ class PurchaseViewSet(viewsets.ModelViewSet):
         contract = get_object_or_404(queryset, pk=pk)
         serializer = PurchaseSerializer(contract)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        request_purchase = request.data
+        purchase_serialized = PurchaseSerializer(request_purchase)
+        request_purchase.save()
+        return Response(purchase_serialized.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, pk=None, **kwargs):
         try:
@@ -140,7 +152,7 @@ class PurchaseViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, pk=None, **kwargs):
         try:
-            self.get_queryset().delete()
+            Purchase.objects.get(pk=pk).delete()
         except Exception:
             return Response(self.serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response({"status": "ok"}, status=status.HTTP_200_OK)
@@ -156,7 +168,7 @@ class LoginAPIView(APIView):
         response = Response(serializer.data, status=status.HTTP_200_OK)
         user = User.objects.get(username=serializer.data.get('username'))
         random_key = str(uuid.uuid4())
-        response.set_cookie(key='uid', value=random_key, httponly=True)
+        response.set_cookie(key='session_id', value=random_key, samesite='None', secure=True)
         session_storage.set(random_key, value=user.pk)
         return response
 
@@ -170,15 +182,18 @@ class RegistrationAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({"status": "registration successful"}, status=status.HTTP_201_CREATED)
 
 
-@api_view(['post'])
-def auth_logout(request):
-    session_id = request.COOKIES.get('session_id')
-    if session_id:
-        session_storage.delete(session_id)
-        response = HttpResponse('ok')
-        response.delete_cookie('session_id')
-        return response
-    return HttpResponse('Unauthorized', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+class LogoutAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        session_id = request.COOKIES.get('session_id')
+        if session_id:
+            session_storage.delete(session_id)
+            response = Response({"status": "logout"}, status=status.HTTP_200_OK)
+            response.delete_cookie('session_id')
+            return response
+
+        return Response({"status": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)

@@ -4,12 +4,12 @@ from .models import Class, Purchase, User
 
 @admin.register(Class)
 class ClassesAdmin(admin.ModelAdmin):
-    list_display = ('trainer', 'price')
+    list_display = ('trainer', 'id', 'price')
 
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'is_superuser', 'is_staff')
+    list_display = ('username', 'id', 'email', 'is_superuser', 'is_staff')
 
 
 @admin.register(Purchase)
